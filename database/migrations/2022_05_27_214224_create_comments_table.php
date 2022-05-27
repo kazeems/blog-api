@@ -13,18 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('title')->unique();
-            $table->string('slug');
-            $table->text('body');
-            $table->string('post_image');
-
-            $table->boolean('upload_successful')->default(false);
-            $table->string('disk')->default('public');
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->text('comment');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('user');
+            $table->foreign('post_id')->references('id')->on('post');
         });
     }
 
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 };

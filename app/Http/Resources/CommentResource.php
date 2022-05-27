@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class CommentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,10 +20,7 @@ class PostResource extends JsonResource
                 "name" => $this->user->name,
                 "images" => $this->user->images
             ],
-            "title" => $this->title,
-            "slug" => $this->slug,
-            "body" => $this->body,
-            "post_images" => $this->images,
+            "comment" => $this->comment,
             "created_dates" => [
                 "created_at_human" => $this->created_at->diffForHumans(),
                 "created_at" => $this->created_at
@@ -32,8 +29,7 @@ class PostResource extends JsonResource
                 "updated_at_human" => $this->updated_at->diffForHumans(),
                 "updated_at" => $this->updated_at
             ],
-            "comments" => CommentResource::collection($this->comments)
-        
+            "replies" => $this->replies
         ];
     }
 }

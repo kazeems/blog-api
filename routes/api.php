@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
 Route::get('/posts', [PostsController::class, 'showPosts']);
-Route::post('/posts', [PostsController::class, 'createPost']);
+Route::get('posts/{post}', [PostsController::class, 'showPost']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
-    
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('/users', [AuthController::class, 'getUsers']);
+    // Posts authenticated routes
+    Route::post('/posts', [PostsController::class, 'createPost']);
+    Route::put('posts/{post}', [PostsController::class, 'updatePost']);
+    Route::delete('posts/{post}', [PostsController::class, 'deletePost']);
 });

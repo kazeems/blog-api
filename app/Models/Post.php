@@ -11,11 +11,22 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'title',
         'slug',
         'body',
-        'post_image'
+        'post_image',
+        'disk',
+        'upload_successful',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
 
     public function getImagesAttribute()
     {
