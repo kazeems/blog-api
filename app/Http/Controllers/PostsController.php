@@ -6,7 +6,9 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\CommentResource;
 use App\Jobs\UploadPostImage;
 use App\Models\Post;
+use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Str;
 
 class PostsController extends Controller
@@ -114,6 +116,23 @@ class PostsController extends Controller
             ]);
     }
    
+    public function createComment(Request $request, Post $post, Comment $comment) {
+        $request->validate([
+            'comment' => ['required', 'max:250']
+        ]);
 
+        $newcomment = Comment::create([
+            'user_id' => auth('sanctum')->user()->id,
+            'post_id' => $post->id,
+            'parent_id' => $comment->id,
+            'comment' => $request->comment
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => 'Comment added successfully',
+            "data" => $newcomment
+        ], 200);
+    }
 
 }

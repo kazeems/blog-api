@@ -25,8 +25,12 @@ Route::get('posts/{post}', [PostsController::class, 'showPost']);
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'getUsers']);
+    Route::post('/users/password/update', [AuthController::class, 'updatePassword']);
     // Posts authenticated routes
     Route::post('/posts', [PostsController::class, 'createPost']);
     Route::put('posts/{post}', [PostsController::class, 'updatePost']);
     Route::delete('posts/{post}', [PostsController::class, 'deletePost']);
+
+    Route::post('posts/{post}/comment', [PostsController::class, 'createComment']);
+    Route::post('posts/{post}/comment/{comment}/reply', [PostsController::class, 'createComment']);
 });
