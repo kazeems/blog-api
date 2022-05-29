@@ -18,6 +18,8 @@ class Post extends Model
         'post_image',
         'disk',
         'upload_successful',
+        'category_id',
+        'post_type'
     ];
 
     public function user() {
@@ -26,6 +28,10 @@ class Post extends Model
 
     public function comments() {
         return $this->hasMany(Comment::class)->whereNull('parent_id');
+    }
+
+    public function category() {
+        return $this->belongsTo(Category::class);
     }
 
     public function getImagesAttribute()

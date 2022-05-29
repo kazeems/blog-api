@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,10 +23,16 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/posts', [PostsController::class, 'showPosts']);
 Route::get('posts/{post}', [PostsController::class, 'showPost']);
 
+Route::get('/categories', [CategoryController::class, 'getCategories']);
+
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'getUsers']);
     Route::post('/users/password/update', [AuthController::class, 'updatePassword']);
+
+    // Category
+    Route::post('/categories/create', [CategoryController::class, 'createCategory']);
+
     // Posts authenticated routes
     Route::post('/posts', [PostsController::class, 'createPost']);
     Route::put('posts/{post}', [PostsController::class, 'updatePost']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\CommentResource;
 use App\Jobs\UploadPostImage;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Http\Request;
@@ -13,13 +14,14 @@ use Str;
 
 class PostsController extends Controller
 {
-    public function createPost(Request $request) {
+    public function createPost(Request $request, Category $category) {
         $request->validate([
             'title' => ['required', 'min:5', 'unique:posts,title'],
+            'category_id' => ['required'],
+            'post_type' => ['required', "in:standard,header,featured"],
             'body' => ['required', 'min:10'],
             'post_image' => ['required', 'mimes:png,jpg', 'max:2048']
         ]);
-
         //get the image
         $post_image = $request->file('post_image');
  
@@ -30,8 +32,18 @@ class PostsController extends Controller
         // move image to temp location (tmp disk)
         $tmp = $post_image->storeAs('uploads/original', $filename, 'tmp');
 
+        $category = Category::where('id', $request->category_id)->first();
+
+        $counter = $category->posts_count + 1;
+        $category->posts_count = $counter;
+
+        $category->save();
+
+
+    
         $newPost = Post::create([
             'user_id' => auth("sanctum")->user()->id,
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'body' => $request->body,
@@ -39,13 +51,14 @@ class PostsController extends Controller
             'disk' => config('site.upload_disk'),
         ]);
 
+
         //dispacth job to handle image manipulation
         $this->dispatch(new UploadPostImage($newPost));
 
         // return succcess response
         return response()->json([
             'success' => true,
-            'message' => 'New property created successfully',
+            'message' => 'New post created successfully',
             'data' => new PostResource($newPost)
         ]);
     }
