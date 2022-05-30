@@ -18,6 +18,11 @@ class CategoryController extends Controller
             'category_name' => $request->category_name
         ]);
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created'
+        ], 200);
+
     }
 
     public function getCategories() {  
@@ -26,6 +31,6 @@ class CategoryController extends Controller
             'success' => true,
             'message' => 'Categories returned successfully',
             'data' => CategoryResource::collection($categories)
-        ]);
+        ], 200);
     }
 }
