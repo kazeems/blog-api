@@ -11,12 +11,11 @@ class CategoryController extends Controller
 {
     public function createCategory(Request $request) {
         $request->validate([
-            "categoryname" => ['required', 'min:3', 'max:10', 'unique:categories,category_name']
+            'category_name' => ['required', 'min:3', 'max:10', 'unique:categories,category_name']
         ]);
 
         Category::create([
-            'category_name' => $request->category_name,
-            "slug" => Str::slug($request->category_name)
+            'category_name' => $request->category_name
         ]);
 
     }
