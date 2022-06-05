@@ -91,7 +91,8 @@ class PostsController extends Controller
     public function updatePost(Request $request, Post $post) {
         $request->validate([
             'title' => ['required', 'min:5', 'unique:posts,title'],
-            'body' => ['required', 'min:10']
+            'body' => ['required', 'min:10'],
+            'category_id' => ['required']
         ]);
 
         $this->authorize('update', $post);
@@ -99,6 +100,7 @@ class PostsController extends Controller
         $post->title = $request->title;
         $post->slug = Str::slug($request->title);
         $post->body = $request->body;
+        $post->category_id = $request->category_id;
         $post->save();
 
         return response()->json([
